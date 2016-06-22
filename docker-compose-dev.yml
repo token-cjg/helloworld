@@ -1,0 +1,32 @@
+version: '2'
+
+services:
+  hello-docker-compose-world:
+    build: .
+    command: npm run dev
+    environment:
+      - LOGSTASH_SERVICE_HOST=logstash
+      - LOGSTASH_SERVICE_PORT=5000
+    links:
+      - logstash
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./service/src:/service/src
+  elasticsearch:
+    image: hharnisc/elasticsearch:v1
+    expose:
+      - "9200"
+  logstash:
+    image: hharnisc/logstash:v2
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
+    expose:
+      - "5000"
+    links:
+      - elasticsearch
+  kibana:
+    image: hharnisc/kibana:v1
+    ports:
+      - "5601:5601"
+    links:
+      - elasticsearch

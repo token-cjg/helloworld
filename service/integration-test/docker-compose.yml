@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+  integration-tester:
+    build: .
+    links:
+      - hello-docker-compose-world
+  hello-docker-compose-world:
+    build: ../..
+    command: npm start
+    expose:
+      - "8080"
